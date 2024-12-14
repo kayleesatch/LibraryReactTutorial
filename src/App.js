@@ -11,18 +11,18 @@ import React, { useEffect, useState } from 'react';
 function App() {
   const [cart, setCart] = useState([])
 
-  function addToCart(book) {
+  const addToCart = (book) => {
    setCart([...cart, { ...book, quantity: 1 }])
   }
 
   function changeQuantity(book, quantity) {
     setCart(
       cart.map((item) => 
-      item.id === book.id
-        ? {
-          ...item, 
-          quantity: +quantity, 
-        }
+        item.id === book.id
+          ? {
+            ...item, 
+            quantity: +quantity, 
+            }
           : item
       )
     )

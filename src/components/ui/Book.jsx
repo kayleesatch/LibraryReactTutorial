@@ -4,7 +4,7 @@ import Rating from './Rating'
 import Price from './Price'
 
 const Book = ({ book }) => {
-    const [img, setImg] = useState()
+    const [img, setImg] = useState(null)
 
     const mountedRef = useRef(true)
 
@@ -18,20 +18,29 @@ const Book = ({ book }) => {
                 }
             }, 300)
         }
+
         return () => {
             //When the component unmounts
             mountedRef.current = false
         }
-    })
+    }, [book.url])
 
     return (
         <div className="book">
           {
-            img ? (
+            //Show skeleton loaders if image is not loaded
+            !img ? (
             <>
+                <div className="book__img--skeleton"></div>
+                <div className="skeleton book__title--skeleton"></div>
+                <div className="skeleton book__rating--skeleton"></div>
+                <div className="skeleton book__price--skeleton"></div>
+            </>
+            ) : (
+            <> 
             <Link to={`/books/${book.id}`}>
             <figure className="book__img--wrapper">
-                <img src={img.src} alt="" className="book__img" />
+                <img src={img.src} alt={book.title} className="book__img" />
             </figure>
             </Link>
             <div className="book__title">
@@ -42,13 +51,8 @@ const Book = ({ book }) => {
             <Rating rating={book.rating} />
             <Price salePrice={book.salePrice} originalPrice={book.originalPrice} />
             </>
-            ) : (
-            <> </>
-            )}  
-            <div className="book__img--skeleton"></div>
-            <div className="skeleton book__title--skeleton"></div>
-            <div className="skeleton book__rating--skeleton"></div>
-            <div className="skeleton book__price--skeleton"></div>
+            )
+          }  
         </div>
     )
 }

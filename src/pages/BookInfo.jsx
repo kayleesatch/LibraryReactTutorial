@@ -1,25 +1,31 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom/cjs/react-router-dom.min'
+import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import Rating from '../components/ui/Rating'
 import Price from '../components/ui/Price'
-import { useParams } from 'react-router-dom/cjs/react-router-dom'
+import { useParams } from 'react-router-dom'
 import Book from '../components/ui/Book'
 
 const BookInfo = ({ books, addToCart, cart = [] }) => {
     const { id } = useParams()
     const book = books.find((book) => +book.id === +id)
 
+    const [isInCart, setIsInCart] = useState(false)
+
+    //Effect hook to track the book in the cart
+    useEffect(() => {
+        //Checking if the current book is in the cart
+        setIsInCart(cart.some((cartBook) => +cartBook.id === +id))
+    }, [cart, id]) //Re-run when cart or id changes
+
     if (!book) {
         return <div>Book not found</div>
     }
 
+    //Add book to cart
     function addBookToCart(book) {
+        console.log("Adding book to cart:", book)
         addToCart(book)
-    }
-
-    function bookExistsOnCart() {
-       return cart.find((cartBook) => +cartBook.id === +id)
     }
 
     return (
@@ -39,14 +45,14 @@ const BookInfo = ({ books, addToCart, cart = [] }) => {
                             <figure className="book__selected--figure">
                                 <img 
                                 src={book.url} 
-                                alt="" 
+                                alt={book.title} 
                                 className="book__selected--img" 
                                 />
                             </figure>
                             <div className="book__selected--description">
                                 <h2 className="book__selected--title">
                                     {book.title}
-                                    </h2>
+                                </h2>
                                 <Rating rating={book.rating} />
                                 <div className="book__selected--price">
                                     <Price originalPrice={book.originalPrice} salePrice={book.salePrice} />
@@ -59,15 +65,10 @@ const BookInfo = ({ books, addToCart, cart = [] }) => {
                                         like what you would get in a real <b>interview.</b> Five proven strategies 
                                         to tackle algorithm questions, so that you can solve questions you haven't seen.
                                     </p>
-                                    <p className="book__summary--para">
-                                        A walk-through of how to derive each solution, so that you can learn how to 
-                                        get there yourself. Hints on how to solve each of the 189 questions, just 
-                                        like what you would get in a real <b>interview.</b> Five proven strategies 
-                                        to tackle algorithm questions, so that you can solve questions you haven't seen.
-                                    </p>
                                 </div>
-                                {bookExistsOnCart() ? (
-                                    <Link to={`/cart`} className="book__link">
+                                {/*Conditionally render the button*/}
+                                {isInCart ? (
+                                    <Link to="/cart" className="book__link">
                                     <button className="btn">Checkout</button>
                                     </Link>
                                 ) : (

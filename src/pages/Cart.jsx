@@ -6,8 +6,7 @@ const Cart = ({ cart, changeQuantity, removeItem }) => {
     const total = () => {
         let price = 0
         cart.forEach((item) => {
-            price += +((item.salePrice || item. originalPrice) * item.quantity
-        )
+            price += +((item.salePrice || item.originalPrice) * item.quantity)
         })
         return price
     }
@@ -52,7 +51,7 @@ const Cart = ({ cart, changeQuantity, removeItem }) => {
                             <div className="cart__quantity">
                                 <input 
                                 type="number" 
-                                min={0} 
+                                min={1} 
                                 max={99} 
                                 className="cart__input" 
                                 value={book.quantity}
